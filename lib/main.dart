@@ -3,8 +3,15 @@ import 'package:intl/date_symbol_data_local.dart';
 import './calendar.dart';
 
 void main() {
-  initializeDateFormatting().then((_) => runApp(new MaterialApp(
-        title: "SIPJW",
+  initializeDateFormatting().then((_) => runApp(new MyApp()));
+}
+
+class MyApp extends StatelessWidget{
+  @override
+  Widget build(BuildContext context) {
+    // TODO: implement build
+    return MaterialApp(
+      title: "SIPJW",
         home: new Home(),
         routes: {
           "/logout": (_) => new Home(),
@@ -13,7 +20,9 @@ void main() {
          theme: new ThemeData(
         primarySwatch: Colors.red, // Your app THEME-COLOR
       ),
-      )));
+    );
+  }
+
 }
 
 class Home extends StatefulWidget {

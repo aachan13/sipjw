@@ -89,6 +89,11 @@ class _CalendarState extends State<Calendar> {
       ),
     );
   }
+  @override
+  void initState() {
+    super.initState();
+    getdata();
+  }
 }
 
 class ItemList extends StatelessWidget {
