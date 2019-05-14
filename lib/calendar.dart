@@ -12,9 +12,13 @@ class Calendar extends StatefulWidget {
 }
 
 class _CalendarState extends State<Calendar> {
+
+ Map<DateTime, List> _events;
+ 
+
   Future<List> getdata() async {
     final response =
-        await http.get("http://054dc24d.ngrok.io/sipjw/getData.php");
+        await http.get("http://192.168.1.14/sipjw/getData.php");
     return json.decode(response.body);
   }
 
@@ -55,7 +59,11 @@ class _CalendarState extends State<Calendar> {
                 
                 TableCalendar(
                      locale: 'en-US',
-           
+                     calendarStyle: CalendarStyle(
+                        selectedColor: Colors.red,
+                        todayColor: Colors.red[200],
+                        markersColor: Colors.blue,
+                     ) ,
                             ) ,
                Expanded(
                  child:  
@@ -89,6 +97,12 @@ class _CalendarState extends State<Calendar> {
       ),
     );
   }
+
+  @override
+  void initState() {
+    super.initState();
+    getdata();
+  }
 }
 
 class ItemList extends StatelessWidget {
@@ -109,10 +123,10 @@ class ItemList extends StatelessWidget {
             ),
 
             child: new Card(
-          child: ListTile(
-          title: Text(list[i]['acara']),
-          subtitle: Text(list[i]['tempat']),
-          trailing: Text(list[i]['waktu']),
+                child: ListTile(
+                      title: Text(list[i]['acara']),
+                       subtitle: Text(list[i]['tempat']),
+                      trailing: Text(list[i]['waktu']),
           ),
           
         ),

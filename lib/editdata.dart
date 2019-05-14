@@ -24,7 +24,7 @@ TextEditingController controllerYangMenghadiri;
 TextEditingController controllerPejabat;
 
 void editData(){
-  var url="http://054dc24d.ngrok.io/sipjw/updateData.php";
+  var url="http://192.168.1.14/sipjw/updateData.php";
 
   http.post(url, body: {
     "id": widget.list[widget.index]['id'],
