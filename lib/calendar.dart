@@ -13,14 +13,56 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> {
 
+ DateTime _selectedDay;
  Map<DateTime, List> _events;
- 
+ Map<DateTime, List> _visibleEvents;
+ List _selectedEvents;
 
-  Future<List> getdata() async {
-    final response =
-        await http.get("http://192.168.1.14/sipjw/getData.php");
-    return json.decode(response.body);
+ 
+  @override
+  void initState() {
+    super.initState();
+    _selectedDay = DateTime.now();
+    
+    getdata();
+    
+    _selectedEvents = _events[_selectedDay] ?? [];
+    _visibleEvents = _events;
+    
   }
+
+  void _onDaySelected(DateTime day, List events) {
+    setState(() {
+      _selectedDay = day;
+      _selectedEvents = events;
+    });
+  }
+
+  void _onVisibleDaysChanged(DateTime first, DateTime last, CalendarFormat format) {
+    setState(() {
+      _visibleEvents = Map.fromEntries(
+        _events.entries.where(
+          (entry) =>
+              entry.key.isAfter(first.subtract(const Duration(days: 1))) &&
+              entry.key.isBefore(last.add(const Duration(days: 1))),
+        ),
+      );
+
+       });
+  }
+
+
+  Future getdata() async {
+      _events ={};
+    final response = await http.get("http://192.168.1.15/sipjw/getData.php");
+    var jsonData = json.decode(response.body);
+    for(var i = 0; i < jsonData.length; i++) {
+        _events[DateTime.parse(jsonData[i]['tanggal'])] = [jsonData[i]['acara']];
+       }
+
+  
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -59,25 +101,19 @@ class _CalendarState extends State<Calendar> {
                 
                 TableCalendar(
                      locale: 'en-US',
+                     events: _visibleEvents,
                      calendarStyle: CalendarStyle(
                         selectedColor: Colors.red,
                         todayColor: Colors.red[200],
                         markersColor: Colors.blue,
                      ) ,
+                     onDaySelected: _onDaySelected,
+                     onVisibleDaysChanged: _onVisibleDaysChanged,
                             ) ,
+                            const SizedBox(height: 8.0),
                Expanded(
-                 child:  
-                 new FutureBuilder<List>(
-                  future: getdata(),
-                  builder: (context, snapshot) {
-                    if (snapshot.hasError) print(snapshot.error);
-                    return snapshot.hasData
-                        ? new ItemList(list: snapshot.data)
-                        : new Center(
-                            child: new CircularProgressIndicator(),
-                          );
-                  }
-                ),
+                 child:  _buildEventList()
+                 
          ),
         ],
 
@@ -98,43 +134,58 @@ class _CalendarState extends State<Calendar> {
     );
   }
 
-  @override
-  void initState() {
-    super.initState();
-    getdata();
-  }
-}
-
-class ItemList extends StatelessWidget {
-  final List list;
-  ItemList({this.list});
-
-  @override
-  Widget build(BuildContext context) {
-    return new ListView.builder(
-      itemCount: list == null ? 0 : list.length,
-      itemBuilder: (context, i) {
-        return new Container(
-          child: new GestureDetector(
-            onTap: ()=>Navigator.of(context).push(
-              new MaterialPageRoute(
-                builder: (BuildContext context) => new Details(list: list, index: i,)
-              )
-            ),
-
-            child: new Card(
-                child: ListTile(
-                      title: Text(list[i]['acara']),
-                       subtitle: Text(list[i]['tempat']),
-                      trailing: Text(list[i]['waktu']),
-          ),
-          
-        ),
-          ),
-        );
-      },
+  Widget _buildEventList() {
+    return ListView(
+      children: _selectedEvents
+          .map((event) => Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                child: Card(
+                                  child: ListTile(
+                    title: Text(event.toString()),
+                    onTap: () => print('$event tapped!'),
+                  ),
+                ),
+              ))
+          .toList(),
     );
   }
+
 }
+
+
+// class ItemList extends StatelessWidget {
+//   final List list;
+//   ItemList({this.list});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return new ListView.builder(
+//       itemCount: list == null ? 0 : list.length,
+//       itemBuilder: (context, i) {
+//         return new Container(
+//           child: new GestureDetector(
+//             onTap: ()=>Navigator.of(context).push(
+//               new MaterialPageRoute(
+//                 builder: (BuildContext context) => new Details(list: list, index: i,)
+//               )
+//             ),
+
+//             child: new Card(
+//                 child: ListTile(
+//                       title: Text(list[i]['acara']),
+//                        subtitle: Text(list[i]['tempat']),
+//                       trailing: Text(list[i]['waktu']),
+//           ),
+          
+//         ),
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
 
 
