@@ -12,7 +12,8 @@ class AddData extends StatefulWidget {
 
 class _AddDataState extends State<AddData> {
   final formKey = GlobalKey<FormState>();
-  final dateFormat = DateFormat('dd MMMM yyyy');
+  // final dateFormat = DateFormat('dd MMMM yyyy');
+  final dateFormat = DateFormat('yyyy-MM-dd');
   final timeFormat = DateFormat('hh:mm a');
   String _acara;
   String _password;
@@ -35,7 +36,7 @@ class _AddDataState extends State<AddData> {
   TextEditingController controllerPejabat = new TextEditingController();
 
   void addData() {
-    var url = "http://192.168.1.14/sipjw/addData.php";
+    var url = "http://3dfece03.ngrok.io/sipjw/addData.php";
 
     http.post(url, body: {
       "acara": controllerAcara.text,

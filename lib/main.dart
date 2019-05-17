@@ -12,6 +12,7 @@ class MyApp extends StatelessWidget{
     // TODO: implement build
     return MaterialApp(
       title: "SIPJW",
+
         home: new Home(),
         routes: {
           "/logout": (_) => new Home(),
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget{
         },
          theme: new ThemeData(
         primarySwatch: Colors.red, // Your app THEME-COLOR
+        fontFamily: 'Raleway',
       ),
       
     );

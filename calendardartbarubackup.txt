@@ -14,8 +14,8 @@ class Calendar extends StatefulWidget {
 class _CalendarState extends State<Calendar> with TickerProviderStateMixin {
 
  DateTime _selectedDay;
- Map<DateTime, List<String>> _events;
- Map<DateTime, List<String>> _visibleEvents;
+ Map<DateTime, List> _events;
+ Map<DateTime, List> _visibleEvents;
  List _selectedEvents;
  var jsonData;
  AnimationController _controller;
@@ -25,12 +25,10 @@ class _CalendarState extends State<Calendar> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     _selectedDay = DateTime.now();
-    
     getdata();
     
     _selectedEvents = _events[_selectedDay] ?? [];
     _visibleEvents = _events;
-
     _controller = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 400),
@@ -43,7 +41,6 @@ class _CalendarState extends State<Calendar> with TickerProviderStateMixin {
   void _onDaySelected(DateTime day, List events) {
     setState(() {
       _selectedDay = day;
-       print(_selectedDay);
       _selectedEvents = events;
     });
   }
@@ -62,25 +59,22 @@ class _CalendarState extends State<Calendar> with TickerProviderStateMixin {
   }
 
 
-  getdata() async {
-    _events ={};
-    final response = await http.get("http://3dfece03.ngrok.io/sipjw/getData.php");
+  Future getdata() async {
+      _events ={};
+    final response = await http.get("http://192.168.1.15/sipjw/getData.php");
     jsonData = json.decode(response.body);
-    
-    // for(var i = 0; i < jsonData.length; i++) {
-    //     _events[DateTime.parse(jsonData[i]['tanggal'])] = [jsonData[i]['acara']];
-    //    }
-    
-         for (var obj in jsonData) {
-             final key = DateTime.parse(obj['tanggal']);
-             if (_events[key] == null) _events[key] = <String>[];
-                 _events[key].add(obj['acara']);
-          }
 
-       setState(() {
-         this._events = _events;
-       });
+  
+    List acara = List();
+     for(var i = 0; i < jsonData.length; i++) {
+        acara.add(jsonData[i]['acara']);
+       }
+    
+    for(var i = 0; i < jsonData.length; i++) {
+        _events[DateTime.parse(jsonData[i]['tanggal'])] = [jsonData[i]['acara']];
+       }
 
+       return _events;
   }
 
 
@@ -154,9 +148,7 @@ class _CalendarState extends State<Calendar> with TickerProviderStateMixin {
     );
   }
 
-
-
-   Widget _buildEventList() {
+  Widget _buildEventList() {
     return ListView(
       children: _selectedEvents
           .map((event) => Container(
@@ -167,7 +159,7 @@ class _CalendarState extends State<Calendar> with TickerProviderStateMixin {
                 child: Card(
                                   child: ListTile(
                     title: Text(event.toString()),
-                    onTap: () => print(event),
+                    onTap: () => print('$event tapped!'),
                   ),
                 ),
               ))
@@ -175,7 +167,6 @@ class _CalendarState extends State<Calendar> with TickerProviderStateMixin {
     );
   }
 
-   
 }
 
 

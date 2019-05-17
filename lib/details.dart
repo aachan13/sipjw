@@ -7,6 +7,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:path/path.dart' as p;
 
 class Details extends StatefulWidget {
+  
   final List list;
   final int index;
   Details({this.index, this.list});
@@ -42,10 +43,8 @@ class _DetailsState extends State<Details> {
 
   void deleteData() {
     var url = "http://192.168.1.14/sipjw/deleteData.php";
-
     http.post(url, body: {'id': widget.list[widget.index]['id']});
   }
-
 
   void confirm() {
     showDialog(
