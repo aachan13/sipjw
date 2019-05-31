@@ -1,23 +1,20 @@
 import 'package:flutter/material.dart';
-import './editdata.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import './calendar.dart';
 import 'package:intl/intl.dart';
-import 'Sambutan.dart';
-import 'package:share/share.dart';
+import 'package:sipjww/Sambutan.dart';
 
-
-class Details extends StatefulWidget {
+class DetailsHumas extends StatefulWidget {
   final List list;
   final int index;
-  Details({this.index, this.list});
+  DetailsHumas({this.index, this.list});
 
   @override
-  _DetailsState createState() => _DetailsState();
+  _DetailsHumasState createState() => _DetailsHumasState();
 }
 
-class _DetailsState extends State<Details> {
-  String _filePath;
+class _DetailsHumasState extends State<DetailsHumas> {
+ 
   String _sambutan;
   final dateFormat = DateFormat('dd MMMM yyyy');
   var tanggal;
@@ -30,93 +27,13 @@ class _DetailsState extends State<Details> {
     _sambutan = widget.list[widget.index]['sambutan'];
   }
 
-  // void getFilePath() async {
-  //   try {
-  //     String filePath = await FilePicker.getFilePath(
-  //         type: FileType.CUSTOM, fileExtension: 'pdf');
-  //     if (filePath == null) {
-  //       return null;
-  //     } else {
-  //       String basename = p.basename(filePath);
-
-  //       setState(() {
-  //         this._filePath = basename;
-  //         updatePDF();
-  //       });
-  //     }
-  //   } on PlatformException catch (e) {
-  //     print("Error while picking the file: " + e.toString());
-  //   }
-  //   return null;
-  // }
-
-  void deleteData() {
-    var url = "http://192.168.43.238/sipjw/deleteData.php";
-    http.post(url, body: {'id': widget.list[widget.index]['id']});
-  }
-
-  void updatePDF() {
-    var url = 'http://192.168.43.238/sipjw/updateData.php';
-    http.post(url, body: {
-      "id": widget.list[widget.index]['id'],
-      'sambutan': _filePath,
-    });
-  }
-
-  void confirm() {
-    showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            content: new Text(
-              "Apakah anda yakin ingin menghapus '${widget.list[widget.index]['acara']}' ?",
-              style: TextStyle(color: Colors.grey),
-            ),
-            actions: <Widget>[
-              new FlatButton(
-                child: new Text(
-                  "OK DELETE!",
-                  style: new TextStyle(
-                      color: Color(0xFF20283e), fontWeight: FontWeight.bold),
-                ),
-                color: Colors.white,
-                onPressed: () {
-                  deleteData();
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => Calendar()));
-                },
-              ),
-              new FlatButton(
-                child: new Text("CANCEL",
-                    style: new TextStyle(color: Colors.grey)),
-                color: Colors.white,
-                onPressed: () => Navigator.pop(context),
-              ),
-            ],
-          );
-        });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: new AppBar(
         title: new Text("Detail Event"),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.edit),
-            onPressed: () => Navigator.of(context).push(new MaterialPageRoute(
-                  builder: (BuildContext context) => new EditData(
-                        list: widget.list,
-                        index: widget.index,
-                      ),
-                )),
-          ),
-          IconButton(
-            icon: Icon(Icons.delete),
-            onPressed: () => confirm(),
-          )
-        ],
+      
+       
       ),
       body: Padding(
         padding: const EdgeInsets.all(10.0),
@@ -253,9 +170,7 @@ class _DetailsState extends State<Details> {
                           ),
                         ],
                       ),
-                      onPressed: () {
-                       Share.share("Ada acara ${widget.list[widget.index]['acara']} pada $tanggal, di ${widget.list[widget.index]['tempat']}, apakah anda bersedia untuk hadir?");
-                      },
+                      onPressed: () {},
                     ),
                   ],
                 ),

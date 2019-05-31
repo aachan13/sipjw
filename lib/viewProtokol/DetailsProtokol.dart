@@ -1,22 +1,21 @@
 import 'package:flutter/material.dart';
-import './editdata.dart';
+import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
-import './calendar.dart';
 import 'package:intl/intl.dart';
-import 'Sambutan.dart';
-import 'package:share/share.dart';
+import 'package:sipjww/viewProtokol/CalendarProtokol.dart';
+import 'package:sipjww/EditData.dart';
 
 
-class Details extends StatefulWidget {
+class DetailsProtokol extends StatefulWidget {
   final List list;
   final int index;
-  Details({this.index, this.list});
+  DetailsProtokol({this.index, this.list});
 
   @override
-  _DetailsState createState() => _DetailsState();
+  _DetailsProtokolState createState() => _DetailsProtokolState();
 }
 
-class _DetailsState extends State<Details> {
+class _DetailsProtokolState extends State<DetailsProtokol> {
   String _filePath;
   String _sambutan;
   final dateFormat = DateFormat('dd MMMM yyyy');
@@ -29,26 +28,6 @@ class _DetailsState extends State<Details> {
     tanggal = dateFormat.format(date).toString();
     _sambutan = widget.list[widget.index]['sambutan'];
   }
-
-  // void getFilePath() async {
-  //   try {
-  //     String filePath = await FilePicker.getFilePath(
-  //         type: FileType.CUSTOM, fileExtension: 'pdf');
-  //     if (filePath == null) {
-  //       return null;
-  //     } else {
-  //       String basename = p.basename(filePath);
-
-  //       setState(() {
-  //         this._filePath = basename;
-  //         updatePDF();
-  //       });
-  //     }
-  //   } on PlatformException catch (e) {
-  //     print("Error while picking the file: " + e.toString());
-  //   }
-  //   return null;
-  // }
 
   void deleteData() {
     var url = "http://192.168.43.238/sipjw/deleteData.php";
@@ -83,7 +62,7 @@ class _DetailsState extends State<Details> {
                 onPressed: () {
                   deleteData();
                   Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => Calendar()));
+                      MaterialPageRoute(builder: (context) => CalendarProtokol()));
                 },
               ),
               new FlatButton(
@@ -210,55 +189,7 @@ class _DetailsState extends State<Details> {
                             "Sambutan: ${widget.list[widget.index]['sambutan']}", style: TextStyle(color: Colors.grey),
                           )),
               
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    FlatButton(
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.add_circle_outline,
-                            size: 14.0,
-                          ),
-                          Text(
-                            "   UPLOAD",
-                            style: TextStyle(
-                                color: Color(0xFF20283e),
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      onPressed: () =>
-                          Navigator.of(context).push(new MaterialPageRoute(
-                            builder: (BuildContext context) => new Sambutan(
-                                  list: widget.list,
-                                  index: widget.index,
-                                ),
-                          )),
-                    ),
-                    FlatButton(
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.share,
-                            size: 14.0,
-                          ),
-                          Text(
-                            "    SHARE",
-                            style: TextStyle(
-                              color: Color(0xFF20283e),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14.0,
-                            ),
-                          ),
-                        ],
-                      ),
-                      onPressed: () {
-                       Share.share("Ada acara ${widget.list[widget.index]['acara']} pada $tanggal, di ${widget.list[widget.index]['tempat']}, apakah anda bersedia untuk hadir?");
-                      },
-                    ),
-                  ],
-                ),
+             
               ],
             ),
           ),

@@ -1,22 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
-import './adddata.dart';
 import 'dart:async';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import './details.dart';
+import 'DetailsHumas.dart';
 import 'package:intl/intl.dart';
 import 'package:toast/toast.dart';
 
-class Calendar extends StatefulWidget {
+class CalendarHumas extends StatefulWidget {
   @override
-  _CalendarState createState() => _CalendarState();
+  _CalendarHumasState createState() => _CalendarHumasState();
 }
 
-class _CalendarState extends State<Calendar> with TickerProviderStateMixin {
+class _CalendarHumasState extends State<CalendarHumas> with TickerProviderStateMixin {
 
-final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-    new GlobalKey<RefreshIndicatorState>();
 final dateFormat = DateFormat('yyyy-MM-dd');
  DateTime _selectedDay;
  Map<DateTime, List<String>> _events;
@@ -36,7 +33,7 @@ final dateFormat = DateFormat('yyyy-MM-dd');
     getdata();
     
     _selectedEvents = _events[_selectedDay] ?? [];
-
+    
     _visibleEvents = _events;
 
     _controller = AnimationController(
@@ -46,7 +43,6 @@ final dateFormat = DateFormat('yyyy-MM-dd');
 
     _controller.forward();
     fetchPost();
-   
   }
 
   @override
@@ -128,29 +124,25 @@ void showToast(String msg, {int duration, int gravity}) {
     Toast.show(msg, context, duration: duration, gravity: gravity);
   }
 
-  
-      
-      
-  
-
 
   @override
   Widget build(BuildContext context) {
     return new Scaffold(
       appBar: new AppBar(
         centerTitle: true,
-        title:  new Text("Jadwal Walikota"),
+        title: new Text("Jadwal Walikota"),
+        
       ),
       drawer: new Drawer(
         child: ListView(
           children: <Widget>[
             new UserAccountsDrawerHeader(
-              accountName: Text("Admin"),
+              accountName: Text("Humas"),
               accountEmail: Text("Diskominfo Balikpapan"),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.white,
                 child: Text(
-                  "A",
+                  "H",
                   style: TextStyle(fontSize: 40.0),
                 ),
               ),
@@ -164,60 +156,51 @@ void showToast(String msg, {int duration, int gravity}) {
         ),
       ),
 
-      body: new Column(
-                children: <Widget>[
-                  
-                  TableCalendar(
-                       locale: 'en-US',
-                       events: _visibleEvents,
-                       calendarStyle: CalendarStyle(
-                          selectedColor: Color(0xFF20283e),
-                          todayColor: Colors.lightBlue[900],
-                          markersColor: Colors.orange[900],
-                       ) ,
-                       onDaySelected: _onDaySelected,
-                       onVisibleDaysChanged: _onVisibleDaysChanged,
-                              ) ,
-                              const SizedBox(height: 8.0),
-                 Expanded(
-                   
-                   child: FutureBuilder(
-                      future: fetchPost(),
-                      builder: (context, snapshot){
-                        return snapshot.connectionState == ConnectionState.done
-                         ? snapshot.hasData 
-                                ? new ItemList(list: snapshot.data,)
-                                : new Center(
-                            child: InkWell(
-                              child: Text('Tidak ada jadwal pada tanggal ini'),
-                              onTap: () => {
-                                
-                              },
-                            ),
-                          )
+      body:
+     
+         new Column(
+              children: <Widget>[
+                
+                TableCalendar(
+                     locale: 'en-US',
+                     events: _visibleEvents,
+                     calendarStyle: CalendarStyle(
+                        selectedColor: Color(0xFF20283e),
+                        todayColor: Colors.lightBlue[900],
+                        markersColor: Colors.orange[900],
+                     ) ,
+                     onDaySelected: _onDaySelected,
+                     onVisibleDaysChanged: _onVisibleDaysChanged,
+                            ) ,
+                            const SizedBox(height: 8.0),
+               Expanded(
+                 
+                 child: FutureBuilder(
+                    future: fetchPost(),
+                    builder: (context, snapshot){
+                      return snapshot.connectionState == ConnectionState.done
+                       ? snapshot.hasData 
+                              ? new ItemList(list: snapshot.data,)
+                              : new Center(
+                          child: InkWell(
+                            child: Text('Tidak ada jadwal pada tanggal ini'),
+                            onTap: () => {
+                              
+                            },
+                          ),
+                        )
 
-                          : CircularProgressIndicator();
-                      }
-                   ),
-                   
-           ),
+                        : CircularProgressIndicator();
+                    }
+                 ),
+                 
+         ),
         ],
 
       
       ),
-       
       // Color(0xFF20283e),
-      floatingActionButton: new FloatingActionButton(
-        backgroundColor: Colors.deepOrange,
-        child: new Icon(
-          Icons.add,
-        ),
-        onPressed: () => Navigator.of(context).push(
-              new MaterialPageRoute(
-                builder: (BuildContext context) => new AddData(),
-              ),
-            ),
-      ),
+     
     );
   }
 
@@ -238,7 +221,7 @@ class ItemList extends StatelessWidget {
           child: new GestureDetector(
             onTap: ()=>Navigator.of(context).push(
               new MaterialPageRoute(
-                builder: (BuildContext context) => new Details(list: list, index: i,)
+                builder: (BuildContext context) => new DetailsHumas(list: list, index: i,)
               )
             ),
 
