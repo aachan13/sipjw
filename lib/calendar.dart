@@ -6,7 +6,6 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import './details.dart';
 import 'package:intl/intl.dart';
-import 'package:toast/toast.dart';
 
 class Calendar extends StatefulWidget {
   @override
@@ -15,8 +14,6 @@ class Calendar extends StatefulWidget {
 
 class _CalendarState extends State<Calendar> with TickerProviderStateMixin {
 
-final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey =
-    new GlobalKey<RefreshIndicatorState>();
 final dateFormat = DateFormat('yyyy-MM-dd');
  DateTime _selectedDay;
  Map<DateTime, List<String>> _events;
@@ -124,16 +121,10 @@ final dateFormat = DateFormat('yyyy-MM-dd');
   }
 }
 
-void showToast(String msg, {int duration, int gravity}) {
-    Toast.show(msg, context, duration: duration, gravity: gravity);
-  }
+
 
   
-      
-      
-  
-
-
+    
   @override
   Widget build(BuildContext context) {
     return new Scaffold(

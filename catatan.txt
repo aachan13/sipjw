@@ -1,3 +1,0 @@
-// for(var i = 0; i < jsonData.length; i++) {
-    //     _events[DateTime.parse(jsonData[i]['tanggal'])] = [jsonData[i]['acara']];
-    //    }

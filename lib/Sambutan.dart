@@ -54,10 +54,10 @@ class _SambutanState extends State<Sambutan> {
       if (filePath == null) {
         return null;
       } else {
-        String basename = p.basename(filePath);
+        // String basename = p.basename(filePath);
 
         setState(() {
-          this._filePath = basename;
+          this._filePath = filePath;
           // updatePDF();
         });
       }

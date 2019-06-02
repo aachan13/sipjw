@@ -5,6 +5,8 @@ import './calendar.dart';
 import 'package:intl/intl.dart';
 import 'Sambutan.dart';
 import 'package:share/share.dart';
+import 'package:open_file/open_file.dart';
+
 
 
 class Details extends StatefulWidget {
@@ -21,6 +23,9 @@ class _DetailsState extends State<Details> {
   String _sambutan;
   final dateFormat = DateFormat('dd MMMM yyyy');
   var tanggal;
+  String _openResult = 'Unknown';
+
+ 
 
   @override
   void initState() {
@@ -97,6 +102,15 @@ class _DetailsState extends State<Details> {
         });
   }
 
+   Future<void> openFile() async {
+    final filePath = "${widget.list[widget.index]['sambutan']}";
+    final message = await OpenFile.open(filePath);
+
+    setState(() {
+      _openResult = message;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,151 +132,178 @@ class _DetailsState extends State<Details> {
           )
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: Card(
-          elevation: 8.0,
-          child: new Container(
-            padding: const EdgeInsets.all(16.0),
-            child: new Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                new Text(
-                  widget.list[widget.index]['acara'],
-                  style: TextStyle(fontSize: 24),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: new Text(
-                    tanggal,
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+      body: ListView(
+        children: <Widget>[
+Padding(
+          padding: const EdgeInsets.all(10.0),
+          child: Card(
+            elevation: 8.0,
+            child: new Container(
+              padding: const EdgeInsets.all(16.0),
+              child: new Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  new Text(
+                    widget.list[widget.index]['acara'],
+                    style: TextStyle(fontSize: 24),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: new Row(
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: new Text(
+                      tanggal,
+                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: new Row(
+                      children: <Widget>[
+                        new Icon(
+                          Icons.location_city,
+                          color: Colors.grey,
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(left: 8.0),
+                          child: new Text(widget.list[widget.index]['tempat'],
+                              style: TextStyle(color: Colors.grey)),
+                        )
+                      ],
+                    ),
+                  ),
+                  new Row(
                     children: <Widget>[
                       new Icon(
-                        Icons.location_city,
+                        Icons.notifications,
                         color: Colors.grey,
                       ),
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0),
-                        child: new Text(widget.list[widget.index]['tempat'],
+                        child: new Text(widget.list[widget.index]['reminder'],
                             style: TextStyle(color: Colors.grey)),
                       )
                     ],
                   ),
-                ),
-                new Row(
-                  children: <Widget>[
-                    new Icon(
-                      Icons.notifications,
-                      color: Colors.grey,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: new Text(widget.list[widget.index]['reminder'],
-                          style: TextStyle(color: Colors.grey)),
-                    )
-                  ],
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: new Text(
-                    "Undangan ditujukan kepada: ${widget.list[widget.index]['tujuan_undangan']}",
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: new Text(
-                      "Penanggung jawab: ${widget.list[widget.index]['penanggung_jawab']}",
-                      style: TextStyle(color: Colors.grey)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: new Text(
-                      "Yang menghadiri: ${widget.list[widget.index]['yang_menghadiri']}",
-                      style: TextStyle(color: Colors.grey)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: new Text(
-                      "Keterangan: ${widget.list[widget.index]['keterangan']}",
-                      style: TextStyle(color: Colors.grey)),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(top: 8.0),
-                  child: new Text(
-                      "Pejabat yang menggantikan: ${widget.list[widget.index]['pejabat']}",
-                      style: TextStyle(color: Colors.grey)),
-                ),
-                Padding(
+                  Padding(
                     padding: const EdgeInsets.only(top: 8.0),
-                    child: _sambutan == null
-                        ? new Text(
-                            'Sambutan Tidak Ada.',
-                            style: TextStyle(color: Colors.grey),
-                          )
-                        : new Text(
-                            "Sambutan: ${widget.list[widget.index]['sambutan']}", style: TextStyle(color: Colors.grey),
-                          )),
-              
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-                    FlatButton(
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.add_circle_outline,
-                            size: 14.0,
-                          ),
-                          Text(
-                            "   UPLOAD",
-                            style: TextStyle(
-                                color: Color(0xFF20283e),
-                                fontWeight: FontWeight.bold),
-                          ),
-                        ],
-                      ),
-                      onPressed: () =>
-                          Navigator.of(context).push(new MaterialPageRoute(
-                            builder: (BuildContext context) => new Sambutan(
-                                  list: widget.list,
-                                  index: widget.index,
-                                ),
-                          )),
+                    child: new Text(
+                      "Undangan ditujukan kepada: ${widget.list[widget.index]['tujuan_undangan']}",
+                      style: TextStyle(color: Colors.grey),
                     ),
-                    FlatButton(
-                      child: Row(
-                        children: <Widget>[
-                          Icon(
-                            Icons.share,
-                            size: 14.0,
-                          ),
-                          Text(
-                            "    SHARE",
-                            style: TextStyle(
-                              color: Color(0xFF20283e),
-                              fontWeight: FontWeight.bold,
-                              fontSize: 14.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: new Text(
+                        "Penanggung jawab: ${widget.list[widget.index]['penanggung_jawab']}",
+                        style: TextStyle(color: Colors.grey)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: new Text(
+                        "Yang menghadiri: ${widget.list[widget.index]['yang_menghadiri']}",
+                        style: TextStyle(color: Colors.grey)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: new Text(
+                        "Keterangan: ${widget.list[widget.index]['keterangan']}",
+                        style: TextStyle(color: Colors.grey)),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: new Text(
+                        "Pejabat yang menggantikan: ${widget.list[widget.index]['pejabat']}",
+                        style: TextStyle(color: Colors.grey)),
+                  ),
+                  Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: _sambutan == null
+                          ? new Text(
+                              'Sambutan Tidak Ada.',
+                              style: TextStyle(color: Colors.grey),
+                            )
+                          : new Text(
+                              "Sambutan: ${widget.list[widget.index]['sambutan']}", style: TextStyle(color: Colors.grey),
+                            )),
+
+                    Padding(
+                      padding: const EdgeInsets.only(top: 8.0),
+                      child: _sambutan == null
+                          ? new Text(
+                              'Sambutan Tidak Ada.',
+                              style: TextStyle(color: Colors.grey),
+                            )
+                          : 
+                          
+                          new FlatButton(
+                            child: Text("Tap to open file", 
+                                    style: TextStyle(
+                                       color: Color(0xFF20283e),
+                                       decoration: TextDecoration.underline
+                                    ) ,),
+                            onPressed: openFile
+                            
+                          )),
+
+                          Text('open result: $_openResult\n'),
+
+                
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: <Widget>[
+                      FlatButton(
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.add_circle_outline,
+                              size: 14.0,
                             ),
-                          ),
-                        ],
+                            Text(
+                              "   UPLOAD",
+                              style: TextStyle(
+                                  color: Color(0xFF20283e),
+                                  fontWeight: FontWeight.bold),
+                            ),
+                          ],
+                        ),
+                        onPressed: () =>
+                            Navigator.of(context).push(new MaterialPageRoute(
+                              builder: (BuildContext context) => new Sambutan(
+                                    list: widget.list,
+                                    index: widget.index,
+                                  ),
+                            )),
                       ),
-                      onPressed: () {
-                       Share.share("Ada acara ${widget.list[widget.index]['acara']} pada $tanggal, di ${widget.list[widget.index]['tempat']}, apakah anda bersedia untuk hadir?");
-                      },
-                    ),
-                  ],
-                ),
-              ],
+                      FlatButton(
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.share,
+                              size: 14.0,
+                            ),
+                            Text(
+                              "    SHARE",
+                              style: TextStyle(
+                                color: Color(0xFF20283e),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                        onPressed: () {
+                         Share.share("Ada acara ${widget.list[widget.index]['acara']} pada $tanggal, di ${widget.list[widget.index]['tempat']}, apakah anda bersedia untuk hadir?");
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
         ),
+        ],
+              
       ),
     );
   }
